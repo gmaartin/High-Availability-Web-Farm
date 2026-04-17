@@ -1,0 +1,13 @@
+FROM debian:bullseye
+#instalar Lighttpd y herramientas de red
+RUN apt-get update && apt-get install -y \
+    lighttpd \
+    curl \
+    net-tools \
+    iputils-ping \
+    iproute2 \
+    && apt-get clean
+
+EXPOSE 80
+# comando para arrancar Lighttpd
+CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]

@@ -1,0 +1,13 @@
+FROM debian:bullseye
+# instalar Nginx y herramientas de red
+RUN apt-get update && apt-get install -y \
+    nginx \
+    net-tools \
+    curl \
+    iputils-ping \
+    iproute2 \
+    && apt-get clean
+
+EXPOSE 80
+# comando para arrancar nginx en primer plano
+CMD ["nginx", "-g", "daemon off;"]

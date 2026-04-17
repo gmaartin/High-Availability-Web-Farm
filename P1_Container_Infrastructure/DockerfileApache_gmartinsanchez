@@ -1,0 +1,34 @@
+FROM debian
+
+LABEL mantainer="gmartinsanchez@correo.ugr.es"
+
+RUN apt-get update && apt-get install -y \
+    apache2 \
+    php \
+    net-tools \
+    libapache2-mod-php \
+    iputils-ping \
+    iproute2 \
+    curl \
+    && apt-get clean
+
+#Para resolver el conflicto de los nombres
+RUN echo "ServerName localhost" >> /etc/apache2/conf-available/servername.conf
+RUN a2enconf servername
+
+#para aumentar los límites de PHP
+RUN sed -i 's/memory_limit = .*/memory_limit = 256M/' /etc/php/*/apache2/php.ini && \
+    sed -i 's/upload_max_filesize = .*/upload_max_filesize = 64M/' /etc/php/*/apache2/php.ini && \
+    sed -i 's/post_max_size = .*/post_max_size = 64M/' /etc/php/*/apache2/php.ini
+
+#habilitar módulo rewrite para URLs amigables
+RUN a2enmod rewrite
+
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_LOG_DIR /var/log/apache2
+
+EXPOSE 80
+
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+

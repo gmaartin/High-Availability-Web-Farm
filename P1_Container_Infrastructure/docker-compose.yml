@@ -1,0 +1,126 @@
+services: #definición de componentes
+  web1:
+    container_name: web1
+    build: #especifica que la imagen no se descarga de internet, sino que se construye de manera local
+      context: . #indica que los archivos para la construcción están en la carpeta actual (.)
+      dockerfile: DockerfileApache_gmartinsanchez
+    image: gmartinsanchez-apache-image:p1 #dar nombre y etiqueta a la imagen resultante de la construcción
+    volumes:
+      - ./web_gmartinsanchez:/var/www/html #./web_gmartinsanchez es el origen de mi PC, /var/html es el destino en el contenedor donde apache busca por defecto los archivos para servir una web
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.9
+      red_servicios:
+        ipv4_address: 192.168.20.9
+
+  web2:
+    container_name: web2
+    build:
+      context: .
+      dockerfile: DockerfileApache_gmartinsanchez
+    image: gmartinsanchez-apache-image:p1 #una vez construida la imagen con web1, se reutiliza para las demás
+    volumes:
+      - ./web_gmartinsanchez:/var/www/html
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.2
+      red_servicios:
+        ipv4_address: 192.168.20.2
+
+  web3:
+    container_name: web3
+    build:
+      context: .
+      dockerfile: DockerfileApache_gmartinsanchez
+    image: gmartinsanchez-apache-image:p1
+    volumes:
+      - ./web_gmartinsanchez:/var/www/html
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.3
+      red_servicios:
+        ipv4_address: 192.168.20.3
+
+  web4:
+    container_name: web4
+    build:
+      context: .
+      dockerfile: DockerfileApache_gmartinsanchez
+    image: gmartinsanchez-apache-image:p1
+    volumes:
+      - ./web_gmartinsanchez:/var/www/html
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.4
+      red_servicios:
+        ipv4_address: 192.168.20.4
+
+  web5:
+    container_name: web5
+    build:
+      context: .
+      dockerfile: DockerfileNginx_gmartinsanchez
+    image: gmartinsanchez-nginx-image:p1
+    volumes:
+      - ./web_gmartinsanchez:/usr/share/nginx/html
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.5
+      #red_servicios:
+      #  ipv4_address: 192.168.20.5
+
+  web6:
+    container_name: web6
+    build:
+      context: .
+      dockerfile: DockerfileNginx_gmartinsanchez
+    image: gmartinsanchez-nginx-image:p1
+    volumes:
+      - ./web_gmartinsanchez:/usr/share/nginx/html
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.6
+      #red_servicios:
+      #  ipv4_address: 192.168.20.6
+
+  web7:
+    container_name: web7
+    build:
+      context: .
+      dockerfile: DockerfileLighttpd_gmartinsanchez
+    image: gmartinsanchez-lighttpd-image:p1
+    volumes:
+      - ./web_gmartinsanchez:/var/www/localhost/htdocs
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.7
+      #red_servicios:
+      #  ipv4_address: 192.168.20.7
+
+  web8:
+    container_name: web8
+    build:
+      context: .
+      dockerfile: DockerfileLighttpd_gmartinsanchez
+    image: gmartinsanchez-lighttpd-image:p1
+    volumes:
+      - ./web_gmartinsanchez:/var/www/localhost/htdocs
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.8
+      #red_servicios:
+      #  ipv4_address: 192.168.20.8
+
+#definicion de las redes
+networks:
+  red_web:
+    driver: bridge
+    ipam: #ip addres management
+      config:
+        - subnet: 192.168.10.0/24
+  red_servicios:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 192.168.20.0/24
